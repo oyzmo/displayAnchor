@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Display Anchor. Palette: Sage #7FA07A / #8FB089 / #6E8C6A, Cream #F4E7D3.
+       A screen with the anchor hung off its corner. The anchor is drawn twice:
+       a fat cream halo first, then the sage strokes on top. That is what lets
+       one shape cross two grounds -- sage on the cream screen, cream-outlined
+       on the sage tile -- without a second colour.
+       Do not nest the anchor inside the screen: that scales its strokes under
+       2px at 48 and both shapes turn to mush. Each shape keeps its own area. -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8FB089"/>
+      <stop offset="1" stop-color="#6E8C6A"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="114" fill="url(#tile)"/>
+
+  <g fill="#F4E7D3">
+    <rect x="40" y="78" width="296" height="210" rx="22"/>
+    <rect x="172" y="288" width="32" height="26"/>
+    <rect x="122" y="312" width="132" height="28" rx="14"/>
+  </g>
+
+  <g transform="translate(348,318) scale(0.64) translate(-256,-250)">
+    <g fill="#F4E7D3" stroke="#F4E7D3" stroke-width="72"
+       stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="256" cy="106" r="38" fill="none"/>
+      <path d="M256 144 V 420"/>
+      <path d="M168 196 H 344"/>
+      <path d="M120 292 C 120 390 184 428 256 432 C 328 428 392 390 392 292" fill="none"/>
+      <path d="M88 300 L152 300 L120 240 Z"/>
+      <path d="M360 300 L424 300 L392 240 Z"/>
+    </g>
+    <g fill="none" stroke="#7FA07A" stroke-width="34"
+       stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="256" cy="106" r="38"/>
+      <path d="M256 144 V 420"/>
+      <path d="M168 196 H 344"/>
+      <path d="M120 292 C 120 390 184 428 256 432 C 328 428 392 390 392 292"/>
+    </g>
+    <g fill="#7FA07A">
+      <path d="M88 300 L152 300 L120 240 Z"/>
+      <path d="M360 300 L424 300 L392 240 Z"/>
+    </g>
+  </g>
+</svg>

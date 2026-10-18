@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.display-anchor"
+          path="/org/gnome/shell/extensions/display-anchor/">
+
+    <key name="mode" type="s">
+      <default>'desktop'</default>
+      <summary>Active display mode</summary>
+      <description>
+        desktop = work display on and TV off, tv = TV on and work display off,
+        custom = a layout the user arranged themselves, which is never enforced.
+      </description>
+    </key>
+
+    <key name="enforce" type="b">
+      <default>true</default>
+      <summary>Re-assert the chosen mode when a display is plugged in or powered on</summary>
+    </key>
+
+    <key name="enforce-on-startup" type="b">
+      <default>true</default>
+      <summary>Also re-assert the chosen mode when the extension starts</summary>
+      <description>
+        Corrects a session that already logged in on the wrong screen.
+      </description>
+    </key>
+
+    <key name="work-connector" type="s">
+      <default>''</default>
+      <summary>Connector of the work display, empty for automatic</summary>
+      <description>
+        Automatic picks the first DisplayPort/embedded panel that is not the TV.
+      </description>
+    </key>
+
+    <key name="tv-connector" type="s">
+      <default>''</default>
+      <summary>Connector of the TV, empty for automatic</summary>
+      <description>Automatic picks the first HDMI connector.</description>
+    </key>
+
+    <key name="tv-only-by-toggle" type="b">
+      <default>true</default>
+      <summary>Only switch to the TV through Display Anchor</summary>
+      <description>
+        A layout change that leaves only the TV on, but did not come from the
+        TV Mode toggle or its shortcut, is put back to the work display instead
+        of being adopted. An HDMI TV in standby still counts as connected, so
+        such a change would otherwise leave a black screen until TV mode was
+        switched off again. The cost is that choosing "TV only" in Settings is
+        undone too; other layouts, such as an extended desktop, are still
+        adopted. Needs enforce.
+      </description>
+    </key>
+
+    <key name="revert-on-tv-gone" type="b">
+      <default>true</default>
+      <summary>Return to the work display when the TV disconnects</summary>
+      <description>
+        Guarantees that powering the TV on later does nothing until TV mode is
+        chosen again.
+      </description>
+    </key>
+
+    <key name="tv-grace-seconds" type="i">
+      <range min="0" max="600"/>
+      <default>30</default>
+      <summary>How long the TV may vanish before TV mode is dropped</summary>
+      <description>
+        Receivers and HDR mode changes drop the HDMI link for a few seconds
+        mid-game; this stops that from ending TV mode.
+      </description>
+    </key>
+
+    <key name="notify" type="b">
+      <default>true</default>
+      <summary>Show a notification when the layout is corrected</summary>
+    </key>
+
+    <key name="last-work-mode" type="s">
+      <default>''</default>
+      <summary>The mode the work display was last seen running on its own</summary>
+      <description>
+        Written automatically, not a preference. Mutter stores a display mode
+        alongside each layout, so the configuration it loads when the TV appears
+        or disappears can bring the work display back at a fixed refresh rate
+        even though it leaves the desktop on the right screen; restoring this
+        mode is what keeps variable refresh rate from being lost that way. It is
+        only recorded from a layout somebody chose deliberately, so switching
+        variable refresh off in Settings is remembered rather than fought.
+      </description>
+    </key>
+
+    <key name="last-work-color-mode" type="i">
+      <range min="-1" max="255"/>
+      <default>-1</default>
+      <summary>The colour mode the work display was last seen using on its own</summary>
+      <description>
+        Written automatically, not a preference; -1 means nothing is remembered
+        yet. The companion of last-work-mode, for the same reason. A display
+        configuration is a complete description of the monitor, so one that does
+        not name a colour mode puts it back to plain SDR -- which is how HDR was
+        being switched off every time the desktop came back from the TV.
+        Restoring this puts it back. Like last-work-mode it is only recorded
+        from a layout somebody chose deliberately, so switching HDR off in
+        Settings is remembered rather than fought.
+      </description>
+    </key>
+
+    <key name="persist-changes" type="b">
+      <default>false</default>
+      <summary>Write corrections to the system display configuration</summary>
+      <description>
+        Off, corrections are applied silently. On, they are also written to
+        Mutter's stored configuration, which cures the jump at its root so the
+        TV powering on causes no switch at all -- but GNOME then asks "Keep
+        these display settings?" each time, and reverts if you do not answer.
+        Worth turning on once to heal a bad stored configuration, then off again.
+      </description>
+    </key>
+
+    <key name="switch-audio" type="b">
+      <default>false</default>
+      <summary>Also move the sound output when the display mode changes</summary>
+      <description>
+        Off by default: this takes over the default audio output, which is a
+        bigger thing to do behind the user's back than moving a display.
+      </description>
+    </key>
+
+    <key name="work-audio-sink" type="s">
+      <default>''</default>
+      <summary>Sound output for the work display, empty for automatic</summary>
+      <description>
+        An output id, sink|port, or a bare sink name for a portless network
+        sink. Automatic uses the output in use at the time, then the one used
+        before the sound moved to the TV, then local hardware that is not an
+        HDMI or DisplayPort output.
+      </description>
+    </key>
+
+    <key name="tv-audio-sink" type="s">
+      <default>''</default>
+      <summary>Sound output for the TV, empty for automatic</summary>
+      <description>
+        An output id, sink|port. Automatic picks the first HDMI or DisplayPort
+        output.
+      </description>
+    </key>
+
+    <key name="last-work-output" type="s">
+      <default>''</default>
+      <summary>The output in use just before the sound moved to the TV</summary>
+      <description>
+        Written automatically, not a preference. Switching back to the work
+        display restores this rather than guessing, so a deliberate choice is not
+        quietly replaced by the most likely-looking device. Only consulted when
+        the work output is set to automatic.
+      </description>
+    </key>
+
+    <key name="audio-settle-seconds" type="i">
+      <range min="0" max="60"/>
+      <default>10</default>
+      <summary>How long to keep re-asserting the sound output after a change</summary>
+      <description>
+        HDMI audio appears a moment after the display does, and the desktop may
+        grab it on its own, so the choice is re-asserted for a short window
+        rather than once.
+      </description>
+    </key>
+
+    <key name="debug" type="b">
+      <default>false</default>
+      <summary>Log every decision to the journal</summary>
+      <description>
+        Writes each hotplug, adopted layout, plan and apply to the gnome-shell
+        journal, prefixed with [display-anchor]. Off by default because it logs on
+        every display change.
+      </description>
+    </key>
+
+    <key name="toggle-tv-mode" type="as">
+      <default><![CDATA[['<Super><Alt>t']]]></default>
+      <summary>Shortcut that switches between the work display and the TV</summary>
+    </key>
+
+  </schema>
+</schemalist>

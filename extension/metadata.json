@@ -1,0 +1,17 @@
+{
+  "uuid": "display-anchor@oyzmo.no",
+  "name": "Display Anchor",
+  "description": "Stops GNOME from moving the desktop to the TV when the TV is powered on. Re-asserts the display layout you chose on every hotplug, and can optionally rewrite Mutter's stored configuration so the switch stops happening at all. Toggle between work display and TV from Quick Settings or with a shortcut.",
+  "shell-version": [
+    "50"
+  ],
+  "session-modes": [
+    "user",
+    "unlock-dialog"
+  ],
+  "version": 21,
+  "version-name": "0.4.1",
+  "settings-schema": "org.gnome.shell.extensions.display-anchor",
+  "gettext-domain": "display-anchor",
+  "url": "https://oyzmo.no/apps/"
+}
